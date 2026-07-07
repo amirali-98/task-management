@@ -1,0 +1,21 @@
+{
+  "name": "task-management",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amirali-98/task-management.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/amirali-98/task-management/issues"
+  },
+  "homepage": "https://github.com/amirali-98/task-management#readme"
+}
