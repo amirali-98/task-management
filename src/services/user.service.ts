@@ -12,6 +12,7 @@ export const signupService = async (req: Request<{}, {}, UserInterface>) => {
     password,
     passwordConfirm,
   });
+  newUser.password = undefined;
 
   const token = signToken(newUser.id);
 
