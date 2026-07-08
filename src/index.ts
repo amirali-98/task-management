@@ -10,6 +10,6 @@ if (process.env.NODE_ENV === 'development') {
   app.use(moragan('dev'));
 }
 
-app.use('/api/v1/', userRoutes);
+app.use('/api/v1/users', userRoutes);
 
 export default app;
