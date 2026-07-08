@@ -2,9 +2,12 @@ import { Request, Response } from 'express';
 import { signupService } from '../services/user.service';
 
 export const signup = async (req: Request, res: Response) => {
-  await signupService(req);
+  const { newUser, token } = await signupService(req);
   res.status(201).json({
     status: 'success',
-    token: 'TOKEN',
+    token,
+    data: {
+      newUser,
+    },
   });
 };
