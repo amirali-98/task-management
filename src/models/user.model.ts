@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import validator from 'validator';
+import bcrypt from 'bcryptjs';
 
 export interface UserInterface {
   firstName: string;
@@ -47,5 +48,12 @@ const userSchema = new Schema<UserInterface>(
     timestamps: true,
   },
 );
+
+userSchema.pre('save', async function () {
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 14);
+    this.passwordConfirm = undefined;
+  }
+});
 
 export const User = model<UserInterface>('User', userSchema);
