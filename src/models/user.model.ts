@@ -8,6 +8,7 @@ export interface UserInterface {
   email: string;
   password: string | undefined;
   passwordConfirm: string | undefined;
+  passwordChangedA: Date | undefined;
 }
 
 interface UserMethods {
@@ -51,6 +52,7 @@ const userSchema = new Schema<UserInterface, UserModel, UserMethods>(
         message: 'Password and password confirm must be same.',
       },
     },
+    passwordChangedA: Date,
   },
   {
     timestamps: true,
