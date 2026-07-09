@@ -8,3 +8,11 @@ export const signToken = (id: string) => {
     expiresIn: expires,
   });
 };
+
+export const verifyToken = async (token: string) => {
+  return (await jwt.verify(token, process.env.JWT_SECRET!)) as {
+    id: string;
+    iat: number;
+    exp: number;
+  };
+};
