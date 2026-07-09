@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { HydratedDocument, Model, Schema, model } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 
@@ -10,7 +10,14 @@ export interface UserInterface {
   passwordConfirm: string | undefined;
 }
 
-const userSchema = new Schema<UserInterface>(
+interface UserMethods {
+  comparePassword(textPassword: string): Promise<boolean>;
+}
+
+type UserModel = Model<UserInterface, {}, UserMethods>;
+type UserDocument = HydratedDocument<UserInterface, UserMethods>;
+
+const userSchema = new Schema<UserInterface, UserModel, UserMethods>(
   {
     firstName: {
       type: String,
@@ -57,4 +64,11 @@ userSchema.pre('save', async function () {
   }
 });
 
-export const User = model<UserInterface>('User', userSchema);
+userSchema.methods.comparePassword = async function (
+  this: UserDocument,
+  textPassword: string,
+): Promise<boolean> {
+  return await bcrypt.compare(textPassword, this.password!);
+};
+
+export const User = model<UserInterface, UserModel>('User', userSchema);
