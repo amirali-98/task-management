@@ -1,4 +1,4 @@
-import { HydratedDocument, Model, Schema, model } from 'mongoose';
+import { HydratedDocument, Model, Query, Schema, model } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 
@@ -9,6 +9,7 @@ export interface UserInterface {
   password: string | undefined;
   passwordConfirm: string | undefined;
   passwordChangedAt: Date | undefined;
+  isActive: boolean;
 }
 
 interface UserMethods {
@@ -54,6 +55,10 @@ const userSchema = new Schema<UserInterface, UserModel, UserMethods>(
       },
     },
     passwordChangedAt: Date,
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,
@@ -65,6 +70,10 @@ userSchema.pre('save', async function () {
     this.password = await bcrypt.hash(this.password, 14);
     this.passwordConfirm = undefined;
   }
+});
+
+userSchema.pre(/^find/, function (this: Query<any, UserInterface>) {
+  this.find({ isActive: { $eq: true } });
 });
 
 userSchema.methods.comparePassword = async function (
