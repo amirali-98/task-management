@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import AppError from '../utils/appError.util';
+import { sendDevError, sendProdError } from '../utils/sendError.util';
 
 const globalErrorHandler = (
   err: AppError,
@@ -10,10 +11,11 @@ const globalErrorHandler = (
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
 
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-  });
+  if (process.env.NODE_ENV === 'development') {
+    sendDevError(err, res);
+  } else if (process.env.NODE_ENV) {
+    sendProdError(err, res);
+  }
 };
 
 export default globalErrorHandler;
