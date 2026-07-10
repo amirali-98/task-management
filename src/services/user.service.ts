@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import { User, UserInterface } from '../models/user.model';
 import { signToken, verifyToken } from '../utils/helper.util';
+import AppError from '../utils/appError.util';
 
 export const signupService = async (req: Request<{}, {}, UserInterface>) => {
   const { firstName, lastName, email, password, passwordConfirm } = req.body;
@@ -25,13 +26,13 @@ export const loginService = async (
   const { email, password } = req.body;
 
   if (!email || !password) {
-    throw new Error('Please provide email and password.');
+    throw new AppError('Please provide email and password.', 400);
   }
 
   const user = await User.findOne({ email }).select('+password');
 
   if (!user || !(await user.comparePassword(password))) {
-    throw new Error('Email or password is incorrect.');
+    throw new AppError('Email or password is incorrect.', 401);
   }
 
   user.password = undefined;
@@ -52,7 +53,10 @@ export const protectService = async (req: Request) => {
   }
 
   if (!token) {
-    throw new Error('You are not logged in. Please login and try again.');
+    throw new AppError(
+      'You are not logged in. Please login and try again.',
+      401,
+    );
   }
 
   const decoded = await verifyToken(token);
@@ -60,10 +64,13 @@ export const protectService = async (req: Request) => {
   const user = await User.findById(decoded.id);
 
   if (!user) {
-    throw Error('User with this token is not already exists.');
+    throw new AppError('User with this token is not already exists.', 401);
   }
 
   if (user.isPasswordChangedAfterTokenSet(decoded.iat)) {
-    throw Error('Password is recently changed. Please login and try again.');
+    throw new AppError(
+      'Password is recently changed. Please login and try again.',
+      401,
+    );
   }
 };
