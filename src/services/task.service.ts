@@ -11,3 +11,11 @@ export const createTaskService = async (req: Request) => {
 
   return newTask;
 };
+
+export const getAllTasksService = async (req: Request) => {
+  const user = req.user;
+
+  const tasks = await Task.find({ user: user?._id });
+
+  return tasks;
+};
