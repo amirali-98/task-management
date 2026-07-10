@@ -8,11 +8,12 @@ export interface UserInterface {
   email: string;
   password: string | undefined;
   passwordConfirm: string | undefined;
-  passwordChangedA: Date | undefined;
+  passwordChangedAt: Date | undefined;
 }
 
 interface UserMethods {
   comparePassword(textPassword: string): Promise<boolean>;
+  isPasswordChangedAfterTokenSet(iat: number): boolean;
 }
 
 type UserModel = Model<UserInterface, {}, UserMethods>;
@@ -52,7 +53,7 @@ const userSchema = new Schema<UserInterface, UserModel, UserMethods>(
         message: 'Password and password confirm must be same.',
       },
     },
-    passwordChangedA: Date,
+    passwordChangedAt: Date,
   },
   {
     timestamps: true,
@@ -71,6 +72,17 @@ userSchema.methods.comparePassword = async function (
   textPassword: string,
 ): Promise<boolean> {
   return await bcrypt.compare(textPassword, this.password!);
+};
+
+userSchema.methods.isPasswordChangedAfterTokenSet = function (
+  this: UserDocument,
+  iat,
+) {
+  if (this.passwordChangedAt) {
+    return iat * 1000 < new Date(this.passwordChangedAt).getTime();
+  }
+
+  return false;
 };
 
 export const User = model<UserInterface, UserModel>('User', userSchema);
