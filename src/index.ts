@@ -2,6 +2,7 @@ import express from 'express';
 import moragan from 'morgan';
 
 import userRoutes from './routes/user.route';
+import globalErrorHandler from './middlewares/error.middleware';
 
 const app = express();
 
@@ -11,5 +12,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use('/api/v1/users', userRoutes);
+
+app.use(globalErrorHandler);
 
 export default app;
