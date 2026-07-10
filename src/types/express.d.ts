@@ -1,6 +1,5 @@
-// src/express.d.ts
-import type { HydratedDocument } from 'mongoose';
-import type { UserInterface } from './models/user.model';
+import { HydratedDocument } from 'mongoose';
+import { UserInterface } from '../models/user.model';
 
 declare global {
   namespace Express {
