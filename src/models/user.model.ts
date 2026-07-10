@@ -34,7 +34,7 @@ const userSchema = new Schema<UserInterface, UserModel, UserMethods>(
     email: {
       type: String,
       required: [true, 'Email is required.'],
-      unique: [true, 'This email is already exist'],
+      unique: true,
       trim: true,
       validate: [validator.isEmail, 'Email must be valid.'],
     },
