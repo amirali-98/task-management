@@ -73,4 +73,6 @@ export const protectService = async (req: Request) => {
       401,
     );
   }
+
+  req.user = user;
 };
