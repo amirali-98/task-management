@@ -1,5 +1,9 @@
-import { Request, Response } from 'express';
-import { loginService, signupService } from '../services/user.service';
+import { NextFunction, Request, Response } from 'express';
+import {
+  loginService,
+  protectService,
+  signupService,
+} from '../services/user.service';
 
 export const signup = async (req: Request, res: Response) => {
   const { newUser, token } = await signupService(req);
@@ -22,4 +26,14 @@ export const login = async (req: Request, res: Response) => {
       user,
     },
   });
+};
+
+export const protect = async (
+  req: Request,
+  _: Response,
+  next: NextFunction,
+) => {
+  await protectService(req);
+
+  next();
 };
