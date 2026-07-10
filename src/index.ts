@@ -3,6 +3,7 @@ import moragan from 'morgan';
 
 import userRoutes from './routes/user.route';
 import globalErrorHandler from './middlewares/error.middleware';
+import AppError from './utils/appError.util';
 
 const app = express();
 
@@ -12,6 +13,11 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use('/api/v1/users', userRoutes);
+app.use((req, _, next) => {
+  next(
+    new AppError(`You cant access to ${req.originalUrl} on this server.`, 404),
+  );
+});
 
 app.use(globalErrorHandler);
 
