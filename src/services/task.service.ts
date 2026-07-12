@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { Task } from '../models/task.model';
+import { Task, TaskInterface } from '../models/task.model';
 import AppError from '../utils/appError.util';
 
 export const createTaskService = async (req: Request) => {
@@ -29,4 +29,12 @@ export const getTaskService = async (id: string) => {
   }
 
   return task;
+};
+
+export const updateTaskService = async (id: string, data: TaskInterface) => {
+  const updatedTask = await Task.findByIdAndUpdate(id, data);
+
+  if (!updatedTask) {
+    throw new AppError('No task found with that id', 404);
+  }
 };

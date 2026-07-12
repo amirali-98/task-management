@@ -3,6 +3,7 @@ import {
   createTaskService,
   getAllTasksService,
   getTaskService,
+  updateTaskService,
 } from '../services/task.service';
 
 export const createTask = async (req: Request, res: Response) => {
@@ -36,5 +37,17 @@ export const getTask = async (req: Request<{ id: string }>, res: Response) => {
     data: {
       task,
     },
+  });
+};
+
+export const updateTask = async (
+  req: Request<{ id: string }>,
+  res: Response,
+) => {
+  await updateTaskService(req.params.id, req.body);
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Task updated successfuly',
   });
 };
