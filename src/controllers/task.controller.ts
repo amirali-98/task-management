@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import {
   createTaskService,
+  deleteTaskService,
   getAllTasksService,
   getTaskService,
   updateTaskService,
@@ -49,5 +50,17 @@ export const updateTask = async (
   res.status(200).json({
     status: 'success',
     message: 'Task updated successfuly',
+  });
+};
+
+export const deleteTask = async (
+  req: Request<{ id: string }>,
+  res: Response,
+) => {
+  await deleteTaskService(req.params.id);
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Task deleted successfuly',
   });
 };
