@@ -39,12 +39,20 @@ export const updateTaskService = async (id: string, data: TaskInterface) => {
   }
 };
 
-export const deleteTaskService = async (id: string) => {
-  const deletedTask = await Task.findByIdAndUpdate(id, {
-    $set: { isDeleted: true },
-  });
+export const deleteTaskService = async (id: string, userId: string) => {
+  const deletedTask = await Task.findOneAndUpdate(
+    { _id: id, user: userId },
+    {
+      $set: { isDeleted: true },
+    },
+    {
+      new: true,
+    },
+  );
 
   if (!deletedTask) {
     throw new AppError('No task found with that id', 404);
   }
+
+  return deletedTask;
 };

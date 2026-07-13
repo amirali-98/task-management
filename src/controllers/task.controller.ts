@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import {
   createTaskService,
   deleteTaskService,
@@ -6,6 +6,7 @@ import {
   getTaskService,
   updateTaskService,
 } from '../services/task.service';
+import AppError from '../utils/appError.util';
 
 export const createTask = async (req: Request, res: Response) => {
   const newTask = await createTaskService(req);
@@ -56,11 +57,26 @@ export const updateTask = async (
 export const deleteTask = async (
   req: Request<{ id: string }>,
   res: Response,
+  next: NextFunction,
 ) => {
-  await deleteTaskService(req.params.id);
+  try {
+    if (!req.user) {
+      throw new AppError('', 401);
+    }
 
-  res.status(200).json({
-    status: 'success',
-    message: 'Task deleted successfuly',
-  });
+    const deletedTask = await deleteTaskService(
+      req.params.id,
+      req.user._id.toString(),
+    );
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Task deleted successfuly',
+      data: {
+        deletedTask,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
 };
